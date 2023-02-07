@@ -1,0 +1,35 @@
+import serial
+from time import time, sleep
+
+ser_motor = [1,2]
+
+# デバイス名と通信速度，タイムアウトの有無を指定
+# ser = serial.Serial('COM10',9600,timeout=None)
+ser_motor[0] = serial.Serial('COM13', 9600, write_timeout=0)
+ser_motor[1] = serial.Serial('COM2', 9600, write_timeout=0)
+
+# アクチュエータを動かすコマンドを送る
+#numはATMEGA328Pの番号(0,1など)
+#arg1はアクチュエータの番号(0または1)
+#arg2にはアクチュエータ（ステッピングモーター）の動作させる量
+def move_actuator(num,arg1, arg2, arg3=None):
+    if arg3 == None:
+        com = str(arg1) + ' ' + str(arg2)
+    else:
+        com = str(arg1) + ' ' + str(arg2) + ' ' + str(arg3)
+    ser_motor[num].write((com + '\n').encode())
+    ser_motor[num].flush()
+    print('num:', num, 'command:', com)
+
+# 実際にロボットを動かす
+def start_p():
+    print('start!')
+    strt_solv = time()
+    i = 0
+
+    move_actuator(1,0,90,160)
+
+    solv_time = time() - strt_solv
+    print('solving time:', solv_time, 's')
+
+start_p()
