@@ -1,0 +1,59 @@
+//https://okasho-engineer.com/processing-to-arduino-communication/
+//https://tomson784.github.io/memo/python/arduino/2021/05/25/pyserial-arduino.html
+
+int val = 0;
+byte data = 0;
+char buf[30];
+int idx = 0;
+//long data[3];
+
+void setup(){
+  Serial.begin(9600);
+  pinMode(13, OUTPUT);
+  digitalWrite(13, LOW);  //  初期化
+}
+
+void loop(){
+  recvData();
+
+  //常にシリアル通信で送信をする
+  Serial.println(val);
+  delay(1000);
+}
+
+//void recvData()
+//{
+//  if (Serial.available()>0) {
+//    buf[idx] = Serial.read();
+//    if (buf[idx] == '\n') {
+//      buf[idx] = '\0';
+//      data[0] = atoi(strtok(buf, " "));
+//      data[1] = atoi(strtok(NULL, " "));
+//      data[2] = atoi(strtok(NULL, " "));
+//      val = data[0];
+//      idx = 0;
+//    }
+//    else {
+//      idx++;
+//    }
+//  }
+//}
+
+void recvData()
+{
+//  int data[3];
+  if(Serial.available()>0){
+    data = (byte)Serial.read();
+    if(data == 123){
+      digitalWrite(13, HIGH);
+      val = data;
+      delay(500);
+
+    }
+    else{
+      digitalWrite(13, LOW);
+      val = data;
+      delay(500);
+    } 
+  }
+}
