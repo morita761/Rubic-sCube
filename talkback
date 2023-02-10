@@ -1,0 +1,29 @@
+import serial
+import time
+
+print("start")
+ser = serial.Serial('/dev/ttyACM0', 9600, timeout = None)
+time.sleep(5)
+
+def move_actuator(num, arg1, arg2, arg3=None):
+    # if arg3 == None:
+    #     com = str(arg1) + ' ' + str(arg2)
+    # else:
+    #     com = str(arg1) + ' ' + str(arg2) + ' ' + str(arg3)
+
+    # if arg3 == None:
+    #     com = chr(arg1) + chr(arg2)
+    # else:
+    #     com = arg1 + arg2 + arg3    
+    # ser.write(str(com).encode())
+    ser.write(chr(arg1).encode())
+    # ser_motor[num].flush()
+    print('num:', num, 'command:', arg1)
+
+while True:
+    val_arduino = ser.readline()
+    # ser.write(chr(123).encode())
+    move_actuator(1,123,1)
+    # val_decoded = float(repr(val_arduino.decode())[1:-5])
+    val_decoded = val_arduino
+    print(val_decoded)
