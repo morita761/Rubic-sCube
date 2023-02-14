@@ -1,0 +1,40 @@
+//https://qiita.com/Ninagawa_Izumi/items/6a18249a31a87dad84e2
+
+#define elements 10 //カンマで区切るデータの最大項目数
+String data_string; //シリアルで受け取る全文字列
+char *p; //文字列をカンマで分割するstrtok処理で使うポインタ
+String p_string; //上記ポインタで区切った文字列の仮格納用
+String data_array[elements]; //カンマ分割されたstrデータを格納する
+
+void setup() {
+  Serial.begin(9600); //シリアルを開く
+}
+
+void loop() {
+  if (Serial.available() > 0 ) {
+    data_string = Serial.readStringUntil(0x0a); //シリアルデータを改行記号が現れるまで読み込む
+    data_string.trim(); //文字列を念のためトリミングする
+    int data_len = data_string.length() + 1; //str→char変換用にデータの長さを調べる
+    char data_char[data_len]; //str→char変換用のchar配列を準備
+    data_string.toCharArray(data_char, data_len); //ようやくstr→charに変換
+    p = strtok(data_char, ","); //カンマ分割の1要素目を行う
+    p_string = p; //一旦strにいれる
+    data_array[0] = p_string; //最終目的の配列に1要素目を格納
+
+    for (int i = 1; i < elements; i++) { //2要素名以降について、要素数分だけデータ配列に格納
+      p = strtok(NULL, ","); //カンマ分割の2要素目以降のstrtokはこの書式になる
+      if (p != NULL) { //要素が空でない場合はその要素をデータ配列に格納
+        p_string = p;
+        data_array[i] = p_string;
+      } else {
+        data_array[i] = "0"; //要素が空の場合はデータ配列に0を格納
+      }
+    }
+    //データを表示する
+    for (int i = 0; i < elements ; i++) {
+      Serial.print(data_array[i]); //データ配列の中身を0項から最終項まで表示する
+      Serial.print("/"); //カンマ区切りではなくスラッシュ区切りで表示
+    }
+    Serial.println();
+  }
+}
